@@ -1,0 +1,104 @@
+{% extends "network/layout.html" %}
+
+{% block body %}
+    <div class="index_wrapper">
+        <div class="index_sec1">
+           <div class="follow_head">
+            <h1>
+                Following
+            </h1>
+           </div>
+        </div>
+        <div class="index_sec2">
+            <div class="heading">
+                Posts
+            </div>
+            {% for post in page_obj %}
+            <div class="post_field">
+                <div class="post_user">
+                    <div class="post_username">
+                        @ <a href="{% url 'profile' post.user %}">{{post.user}}</a> 
+                    </div>
+                    <div class="post_date">
+                        {{post.date|timesince}}
+                    </div>
+                </div>
+                <div class="post_text" data-post-id="{{post.pk}}">
+                    <div class="post_textarea" id="post_textArea">
+                        {{post.post}}
+                   </div>
+                    <hr>
+                    <div class="post_bt">
+                        
+                        <div class="post_like">
+
+                            {% if request.user.is_authenticated %}
+                                {% if post in liked %}
+                                <button type="submit" class="btn btn-lg btn-warning unlike_btn" data-post-id="{{post.pk}}" id="unlike_btn" >Unlike</button>&nbsp;
+                            
+                          
+                                {% else %}
+                                <button type="submit" class="btn btn-lg btn-success like_btn" data-post-id="{{post.pk}}" >Like</button>&nbsp;
+                          
+                                {% endif %}
+
+                            {% else %}
+                            <a href="{% url 'login' %}">Log In</a> to like this post
+                            {% endif %}
+
+                            <span class="like_count">
+                               <!-- {{post_likes|default:0}} -->
+                               
+                               {{ post.like_count }}
+                              
+                            
+                            </span>
+                        </div>
+                        <div class="post_edit">
+                            {% if post.user == request.user %}
+                            <button  class="btn btn-lg btn-warning edit_btn" data-post-id="{{post.pk}}" >Edit</button> 
+                            {% else %}
+
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                </div>
+               
+            </div>
+            {% endfor %}
+
+            <nav class="page-navigation">
+
+        
+                <ul class="pagination justify-content-center" id="paginate">
+                    <li class="page-item direct">
+                        {% if page_obj.has_previous %}
+    
+                            <a href="?page=1" class="page-link">&laquo; First </a>
+                            <a href="?page={{page_obj.previous_page_number}}" class="page-link">Previous</a>
+    
+                        {% endif %}
+    
+                    </li>
+                    <li class="page-item direct">
+                        <a href="?page={{page_obj.number}}" class="page-link">
+                            Page{{ page_obj.number}} of {{ page_obj.paginator.num_pages}}.
+    
+                        </a>
+                      
+                    </li>
+                    <li class="page-item direct">
+                    {% if page_obj.has_next %}
+    
+                        <a href="?page={{page_obj.next_page_number}}" class="page-link">Next</a>
+                        <a href="?page={{page_obj.paginator.num_pages}}" class="page-link">Last &raquo;</a>
+    
+                    {% endif %}
+                </li>
+                </ul>
+            </nav>
+
+        </div>
+    </div>
+{% endblock %}
